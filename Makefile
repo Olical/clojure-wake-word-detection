@@ -1,5 +1,8 @@
 WAKE_PHRASE := hey porcupine
 
+default: wake-word-engine
+	LD_LIBRARY_PATH="wake-word-engine/jni" clojure -m wakeup.main
+
 wake-word-engine: wake-word-engine/Porcupine wake-word-engine/wake_phrase.ppn wake-word-engine/jni/libpv_porcupine.so src/java/wakeup/porcupine/Porcupine.class
 
 wake-word-engine/Porcupine:
