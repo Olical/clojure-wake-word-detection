@@ -29,16 +29,25 @@
 
       (f line))))
 
+(defn byte-pair->short [[a b]]
+  (bit-or (bit-shift-left a 8) (bit-and b 0xFF)))
+
+(defn bytes->shorts [buf]
+  (->> buf
+       (partition 2)
+       (map byte-pair->short)
+       (short-array)))
+
 (defn -main []
   (println "Starting up wake word detector...")
   (let [porcupine (init-porcupine)]
     (with-microphone
       (fn [line]
-        (let [size 512
+        (let [size 1024
               buf (byte-array size)]
-          (println "Listening!")
+          (println "Listening...")
           (loop []
             (.read line buf 0 size)
-            (when (.processFrame porcupine (short-array buf))
-              (println "Wake word detected."))
+            (when (.processFrame porcupine (bytes->shorts buf))
+              (println "Wake word detected!"))
             (recur)))))))
