@@ -47,7 +47,7 @@
               buf (byte-array size)]
           (println "Listening...")
           (loop []
-            (.read line buf 0 size)
-            (when (.processFrame porcupine (bytes->shorts buf))
-              (println "Wake word detected!"))
-            (recur)))))))
+            (when (> (.read line buf 0 size) 0)
+              (when (.processFrame porcupine (bytes->shorts buf))
+                (println "Wake word detected!"))
+              (recur))))))))
